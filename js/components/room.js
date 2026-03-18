@@ -24,14 +24,14 @@ export function loadRoom(roomId) {
   if (room.video) {
     const basePath = room.video.replace(/\.mp4$/, '');
     vid.poster = basePath + '-poster.jpg';
-    const webmSrc = document.createElement('source');
-    webmSrc.src = basePath + '.webm';
-    webmSrc.type = 'video/webm';
     const mp4Src = document.createElement('source');
     mp4Src.src = room.video;
     mp4Src.type = 'video/mp4';
-    vid.appendChild(webmSrc);
     vid.appendChild(mp4Src);
+    const webmSrc = document.createElement('source');
+    webmSrc.src = basePath + '.webm';
+    webmSrc.type = 'video/webm';
+    vid.appendChild(webmSrc);
     vid.muted = !(roomId === 'arch' || roomId === 'brand');
     vid.load();
   }

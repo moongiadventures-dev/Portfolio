@@ -1,171 +1,73 @@
 #!/usr/bin/env bash
-# optimize-videos.sh — Compress all videos for web deployment
+#!/usr/bin/env bash
+# optimize-videos.sh — High quality rebuild from original masters
 # Usage: bash scripts/optimize-videos.sh
-#
-# Creates compressed MP4 + WebM + poster JPEGs alongside originals.
-# Originals are moved to videos-original/ for backup.
 
 set -euo pipefail
 
 PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-ORIGINAL_BACKUP="$PROJECT_ROOT/videos-original"
+SOURCE_ROOT="$PROJECT_ROOT/videos-original"
 
-# Background videos (higher compression, no audio)
-BG_VIDEOS=(
-	"intro-bg.mp4"
-	"studio-bg.mp4"
-	"videos/brand-vault/brand-bg.mp4"
-)
+if [ ! -d "$SOURCE_ROOT" ]; then
+	echo "ERROR: $SOURCE_ROOT not found"
+	exit 1
+fi
 
-# All portfolio videos (standard compression)
-PORTFOLIO_DIRS=(
-	"videos/architects-office"
-	"videos/brand-vault"
-)
+echo "═══════════════════════════════════════"
+echo "  Moongi Portfolio — HQ Re-encode"
+echo "═══════════════════════════════════════"
+echo "Source masters: $SOURCE_ROOT"
+echo "Target profile: 1080p max / CRF 18 / AAC 192k"
+echo ""
 
-mkdir -p "$ORIGINAL_BACKUP"
+reencode_one() {
+	local src_abs="$1"
+	local rel="${src_abs#$SOURCE_ROOT/}"
+	local out_abs="$PROJECT_ROOT/$rel"
+	local out_dir
+	out_dir="$(dirname "$out_abs")"
+	local base_noext
+	base_noext="${out_abs%.mp4}"
 
-compress_bg() {
-	local src="$1"
-	local dir=$(dirname "$src")
-	local base=$(basename "$src" .mp4)
-	local mp4_out="${dir}/${base}.mp4"
-	local webm_out="${dir}/${base}.webm"
-	local poster_out="${dir}/${base}-poster.jpg"
+	mkdir -p "$out_dir"
 
-	echo "━━━ BG: $src"
+	echo "━━━ $rel"
 
-	# Backup original
-	local backup_dir="$ORIGINAL_BACKUP/$(dirname "$src")"
-	mkdir -p "$backup_dir"
-	cp "$PROJECT_ROOT/$src" "$backup_dir/" 2>/dev/null || true
-
-	# Poster JPEG (first frame)
-	ffmpeg -y -i "$PROJECT_ROOT/$src" -vframes 1 -vf "scale=-2:720" -q:v 2 "$PROJECT_ROOT/$poster_out" 2>/dev/null
-	echo "  ✓ poster: $poster_out"
-
-	# Compressed MP4 (CRF 32, no audio, 720p)
-	ffmpeg -y -i "$PROJECT_ROOT/$src" \
-		-c:v libx264 -crf 32 -preset slow \
-		-vf "scale=-2:'min(720,ih)'" \
-		-an -movflags +faststart \
-		"$PROJECT_ROOT/${dir}/${base}-compressed.mp4" 2>/dev/null
-	echo "  ✓ mp4:    ${dir}/${base}-compressed.mp4 ($(du -h "$PROJECT_ROOT/${dir}/${base}-compressed.mp4" | cut -f1))"
-
-	# WebM (CRF 38, no audio, 720p)
-	ffmpeg -y -i "$PROJECT_ROOT/$src" \
-		-c:v libvpx-vp9 -crf 38 -b:v 0 \
-		-vf "scale=-2:'min(720,ih)'" \
-		-an \
-		"$PROJECT_ROOT/$webm_out" 2>/dev/null
-	echo "  ✓ webm:   $webm_out ($(du -h "$PROJECT_ROOT/$webm_out" | cut -f1))"
-
-	# Replace original with compressed
-	mv "$PROJECT_ROOT/${dir}/${base}-compressed.mp4" "$PROJECT_ROOT/$mp4_out"
-	echo ""
-}
-
-compress_portfolio() {
-	local src="$1"
-	local dir=$(dirname "$src")
-	local base=$(basename "$src" .mp4)
-	local mp4_out="${dir}/${base}.mp4"
-	local webm_out="${dir}/${base}.webm"
-	local poster_out="${dir}/${base}-poster.jpg"
-
-	# Skip background videos (handled separately)
-	for bg in "${BG_VIDEOS[@]}"; do
-		[ "$src" = "$bg" ] && return 0
-	done
-
-	echo "━━━ Portfolio: $src"
-
-	# Backup original
-	local backup_dir="$ORIGINAL_BACKUP/$(dirname "$src")"
-	mkdir -p "$backup_dir"
-	cp "$PROJECT_ROOT/$src" "$backup_dir/" 2>/dev/null || true
-
-	# Poster JPEG (first frame)
-	ffmpeg -y -i "$PROJECT_ROOT/$src" -vframes 1 -vf "scale=-2:720" -q:v 2 "$PROJECT_ROOT/$poster_out" 2>/dev/null
-	echo "  ✓ poster: $poster_out"
-
-	# Compressed MP4 (CRF 28, AAC 128k, 720p)
-	ffmpeg -y -i "$PROJECT_ROOT/$src" \
-		-c:v libx264 -crf 28 -preset slow \
-		-vf "scale=-2:'min(720,ih)'" \
-		-c:a aac -b:a 128k \
+	ffmpeg -y -i "$src_abs" \
+		-vf "scale=-2:'min(1080,ih)':flags=lanczos" \
+		-c:v libx264 -preset slow -crf 18 -pix_fmt yuv420p -profile:v high -level 4.1 \
+		-c:a aac -b:a 192k \
 		-movflags +faststart \
-		"$PROJECT_ROOT/${dir}/${base}-compressed.mp4" 2>/dev/null
-	echo "  ✓ mp4:    ${dir}/${base}-compressed.mp4 ($(du -h "$PROJECT_ROOT/${dir}/${base}-compressed.mp4" | cut -f1))"
+		"$out_abs" 2>/dev/null
+	echo "  ✓ mp4:   $rel ($(du -h "$out_abs" | cut -f1))"
 
-	# WebM (CRF 35, Opus 96k, 720p)
-	ffmpeg -y -i "$PROJECT_ROOT/$src" \
-		-c:v libvpx-vp9 -crf 35 -b:v 0 \
-		-vf "scale=-2:'min(720,ih)'" \
-		-c:a libopus -b:a 96k \
-		"$PROJECT_ROOT/$webm_out" 2>/dev/null
-	echo "  ✓ webm:   $webm_out ($(du -h "$PROJECT_ROOT/$webm_out" | cut -f1))"
+	ffmpeg -y -i "$src_abs" \
+		-vf "scale=-2:'min(1080,ih)':flags=lanczos" \
+		-c:v libvpx-vp9 -crf 28 -b:v 0 \
+		-c:a libopus -b:a 128k \
+		"$base_noext.webm" 2>/dev/null
+	echo "  ✓ webm:  ${rel%.mp4}.webm ($(du -h "$base_noext.webm" | cut -f1))"
 
-	# Replace original with compressed
-	mv "$PROJECT_ROOT/${dir}/${base}-compressed.mp4" "$PROJECT_ROOT/$mp4_out"
+	ffmpeg -y -i "$src_abs" \
+		-vframes 1 -vf "scale=-2:'min(1080,ih)':flags=lanczos" -q:v 2 \
+		"$base_noext-poster.jpg" 2>/dev/null
+	echo "  ✓ poster:${rel%.mp4}-poster.jpg ($(du -h "$base_noext-poster.jpg" | cut -f1))"
+
 	echo ""
 }
 
-echo "═══════════════════════════════════════"
-echo "  Moongi Portfolio — Video Optimizer"
-echo "═══════════════════════════════════════"
-echo ""
+while IFS= read -r src; do
+	reencode_one "$src"
+done < <(find "$SOURCE_ROOT" -name "*.mp4" | sort)
 
-# Process background videos
-echo "▸ Background Videos (CRF 32, no audio)"
-echo "───────────────────────────────────────"
-for bg in "${BG_VIDEOS[@]}"; do
-	if [ -f "$PROJECT_ROOT/$bg" ]; then
-		compress_bg "$bg"
-	else
-		echo "  ⚠ Not found: $bg"
-	fi
-done
-
-# Process portfolio videos
-echo "▸ Portfolio Videos (CRF 28, AAC 128k)"
-echo "───────────────────────────────────────"
-for dir in "${PORTFOLIO_DIRS[@]}"; do
-	if [ -d "$PROJECT_ROOT/$dir" ]; then
-		for f in "$PROJECT_ROOT/$dir"/*.mp4; do
-			[ -f "$f" ] || continue
-			rel="${f#$PROJECT_ROOT/}"
-			compress_portfolio "$rel"
-		done
-	fi
-done
-
-# Also handle root portfolio videos (if any non-bg mp4s exist)
-for f in "$PROJECT_ROOT"/*.mp4; do
-	[ -f "$f" ] || continue
-	rel="${f#$PROJECT_ROOT/}"
-	is_bg=false
-	for bg in "${BG_VIDEOS[@]}"; do
-		[ "$rel" = "$bg" ] && is_bg=true
-	done
-	$is_bg || compress_portfolio "$rel"
-done
-
-echo ""
 echo "═══════════════════════════════════════"
 echo "  Summary"
 echo "═══════════════════════════════════════"
-echo ""
-echo "MP4 sizes:"
-find "$PROJECT_ROOT" -name "*.mp4" -not -path "*/videos-original/*" -not -path "*/.git/*" -exec du -h {} \; | sort -rh
-echo ""
+
 echo "Total MP4:"
-find "$PROJECT_ROOT" -name "*.mp4" -not -path "*/videos-original/*" -not -path "*/.git/*" -exec du -ch {} + | tail -1
-echo ""
-echo "WebM files:"
-find "$PROJECT_ROOT" -name "*.webm" -not -path "*/videos-original/*" -exec du -h {} \; | sort -rh
-echo ""
-echo "Poster images:"
-find "$PROJECT_ROOT" -name "*-poster.jpg" -exec du -h {} \; | sort -rh
-echo ""
-echo "Done! Originals backed up to: $ORIGINAL_BACKUP"
+find "$PROJECT_ROOT" -name "*.mp4" -not -path "*/videos-original/*" -exec du -ch {} + | tail -1
+
+echo "Total WebM:"
+find "$PROJECT_ROOT" -name "*.webm" -not -path "*/videos-original/*" -exec du -ch {} + | tail -1
+
+echo "Done."
