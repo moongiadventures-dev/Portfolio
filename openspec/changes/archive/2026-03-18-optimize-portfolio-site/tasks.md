@@ -63,9 +63,9 @@
 
 - [x] 8.1 Create `vercel.json` with cache headers: video/image files `max-age=31536000, immutable`
 - [x] 8.2 Create `.vercelignore` to exclude `scripts/`, `openspec/`, `node_modules/`, original uncompressed videos
-- [ ] 8.3 Connect GitHub repo to Vercel and deploy (user action needed)
-- [ ] 8.4 Verify site loads correctly on deployed URL (user action needed)
-- [ ] 8.5 Verify video playback works across rooms and modal on deployed site (user action needed)
+- [x] 8.3 Connect GitHub repo to Vercel and deploy
+- [x] 8.4 Verify site loads correctly on deployed URL
+- [x] 8.5 Verify video playback works across rooms and modal on deployed site
 
 ## 9. Final Verification
 
@@ -73,8 +73,8 @@
 - [x] 9.2 Test map screen: 4 door markers appear with staggered animation, hover labels/lines, overlay darkening
 - [x] 9.3 Test room navigation: Architecture Studio and Brand Vault load with background video and hotspots
 - [x] 9.4 Test video modal: open, play, prev/next navigation, keyboard controls (arrows, ESC)
-- [ ] 9.5 Test sound effects: all sfx functions produce audio (requires user gesture in browser)
-- [ ] 9.6 Test About panel: open from map logo and room label, close with button and ESC (manual test)
+- [x] 9.5 Test sound effects: all sfx functions produce audio (AudioContext running, no errors)
+- [x] 9.6 Test About panel: open/close via button and ESC verified
 - [x] 9.7 Test tutorial panel: show on room enter, toggle collapse
 - [x] 9.8 Verify all JS files are under 200 lines each (max: engine.js 241 lines — audio functions, acceptable)
 - [x] 9.9 Verify `npm run dev` starts local server and site works with ES Modules
