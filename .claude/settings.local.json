@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(wc -l \"/Users/choiyoonje/workspace/vibe-coding/moongi-portfolio/gallery \\(3\\).html\")",
+      "Bash(cat \"/Users/choiyoonje/workspace/vibe-coding/moongi-portfolio/gallery \\(3\\).html\")",
+      "Bash(npm list:*)"
+    ]
+  }
+}

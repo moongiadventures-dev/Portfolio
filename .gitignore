@@ -1,12 +1,7 @@
-# Ignore everything
-*
+node_modules/
+.DS_Store
+*.log
 
-# Except these
-!.gitignore
-!.gitattributes
-!gallery (3).html
-!intro-bg.mp4
-!site-plan.jpg
-!studio-bg.mp4
-!videos/
-!videos/**
+# Original uncompressed videos (backed up externally)
+videos-original/
+.vercel

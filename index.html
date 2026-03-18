@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MOONGI — Studio</title>
+<meta name="description" content="Moongi Studio — AI video creator portfolio. Architecture, brand campaigns, and creative storytelling powered by AI.">
+<meta property="og:title" content="MOONGI — Studio">
+<meta property="og:description" content="Turning ideas into stories. Architecture, brand campaigns, and creative storytelling powered by AI.">
+<meta property="og:image" content="https://moongi-portfolio.vercel.app/intro-bg-poster.jpg">
+<meta property="og:url" content="https://moongi-portfolio.vercel.app">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="MOONGI — Studio">
+<meta name="twitter:description" content="Turning ideas into stories. Architecture, brand campaigns, and creative storytelling powered by AI.">
+<meta name="twitter:image" content="https://moongi-portfolio.vercel.app/intro-bg-poster.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;1,200;1,300&family=Josefin+Sans:wght@100;200;300&family=Big+Shoulders+Display:wght@900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ══ INTRO ══ -->
+<div id="intro">
+  <video id="intro-video" autoplay muted loop playsinline preload="metadata" poster="intro-bg-poster.jpg">
+    <source src="intro-bg.webm" type="video/webm">
+    <source src="intro-bg.mp4" type="video/mp4">
+  </video>
+  <div id="intro-overlay"></div>
+  <div id="i-eye">Former Architect &nbsp;·&nbsp; Big Tech PM &nbsp;·&nbsp; AI Creator</div>
+  <div id="i-name">Moongi</div>
+  <div id="i-sub">Turning ideas into stories. Using AI to make marketing that actually moves people.</div>
+  <div id="scroll-hint">
+    <span id="scroll-hint-text">Scroll to enter</span>
+    <span id="scroll-arrow">↓</span>
+  </div>
+  <div id="audio-hint" style="position:absolute;bottom:2.2rem;left:50%;transform:translateX(-50%);font-family:'Josefin Sans',sans-serif;font-weight:100;font-size:.52rem;letter-spacing:.45em;text-transform:uppercase;color:rgba(201,168,76,.55);white-space:nowrap;pointer-events:none;animation:blinkPulse 2s ease-in-out infinite;">▶ Click anywhere to enable sound</div>
+</div>
+
+
+<!-- CURSOR -->
+<div id="cur-dot"></div>
+<div id="cur-ring"></div>
+
+<!-- ══ MAP SCREEN ══ -->
+<div id="map-screen">
+
+  <div id="map-title">
+    <div id="map-title-center">SITE NAVIGATION SYSTEM</div>
+    <div id="map-title-right">▸ SELECT DESTINATION</div>
+  </div>
+
+  <div id="site-plan">
+    <!-- Typewriter instruction upper-right -->
+    <div id="map-instruction">
+      <div id="map-instruction-text">Click a circle over each door to enter the gallery</div>
+    </div>
+
+    <img id="site-plan-img" src="site-plan.jpg" alt="">
+    <div id="map-overlay"></div>
+
+    <!-- MOONGI STUDIO logo with About leader -->
+    <div id="map-logo">
+      <div id="map-logo-box"><span style="color:var(--gold)">Moongi</span> <span style="color:#fff">Studio</span></div>
+      <span id="map-logo-line"></span>
+      <div id="map-about-btn">▸ About Moongi</div>
+    </div>
+
+    <!--
+      Single SVG — door markers, leader lines, labels.
+      All coords in source image space (1376×768).
+      Doors measured from actual door openings in blueprint.
+
+      Door positions:
+        arch  (770, 222)  — dome bottom opening
+        brand (342, 452)  — left building left door
+        web   (418, 452)  — left building right door  
+        imag  (792, 418)  — centre-right building door
+
+      Label anchors (end of leader line):
+        arch  → upper-left  label at (460, 100)
+        brand → far-left    label at (60,  360)
+        web   → lower-left  label at (80,  560)
+        imag  → right       label at (1050, 310)
+    -->
+    <svg id="map-svg" viewBox="0 0 1376 768"
+         xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+
+      <!-- Architecture Studio — red (874,212) -->
+      <g class="door-group" style="--c:#ff3c6e" pointer-events="all"
+         data-rx="867" data-ry="200" data-room="arch"
+        >
+        <circle class="d-hit" cx="867" cy="200" r="44" fill="rgba(0,0,0,0.001)" pointer-events="all"/>
+        <circle class="d-ring" fill="rgba(0,0,0,0.001)" cx="867" cy="200" r="21" stroke="#ff3c6e"/>
+        <circle class="d-spin" cx="867" cy="200" r="30" stroke="#ff3c6e"/>
+        <circle class="d-dot"  cx="867" cy="200" r="5"  fill="#ff3c6e"/>
+        <!-- click to enter text arc around dot -->
+        <text class="d-cte" font-size="9" fill="#ff3c6e" letter-spacing="3">
+          <textPath href="#arc-arch" startOffset="50%" text-anchor="middle">CLICK TO ENTER</textPath>
+        </text>
+        <defs>
+          <path id="arc-arch" d="M 828,200 a 39,39 0 0 1 78,0"/>
+        </defs>
+        <polyline class="d-line" stroke="#ff3c6e" points="867,184 867,148 1050,148"/>
+        <line     class="d-line" stroke="#ff3c6e" x1="1050" y1="148" x2="1295" y2="148"/>
+        <text class="d-label" x="1054" y="138" fill="#ff3c6e" font-size="28">Architecture Studio</text>
+      </g>
+
+      <!-- The Brand Vault — orange (514,466) -->
+      <g class="door-group" style="--c:#ffaa22" pointer-events="all"
+         data-rx="528" data-ry="458" data-room="brand"
+        >
+        <circle class="d-hit" cx="528" cy="458" r="44" fill="rgba(0,0,0,0.001)" pointer-events="all"/>
+        <circle class="d-ring" fill="rgba(0,0,0,0.001)" cx="528" cy="458" r="21" stroke="#ffaa22"/>
+        <circle class="d-spin" cx="528" cy="458" r="30" stroke="#ffaa22"/>
+        <circle class="d-dot"  cx="528" cy="458" r="5"  fill="#ffaa22"/>
+        <text class="d-cte" font-size="9" fill="#ffaa22" letter-spacing="3">
+          <textPath href="#arc-brand" startOffset="50%" text-anchor="middle">CLICK TO ENTER</textPath>
+        </text>
+        <defs>
+          <path id="arc-brand" d="M 489,458 a 39,39 0 0 1 78,0"/>
+        </defs>
+        <polyline class="d-line" stroke="#ffaa22" points="512,458 320,390 80,390"/>
+        <line     class="d-line" stroke="#ffaa22" x1="80" y1="390" x2="400" y2="390"/>
+        <text class="d-label" x="82" y="380" fill="#ffaa22" font-size="28">The Brand Vault</text>
+      </g>
+
+      <!-- The Web Studio — purple (601,440) -->
+      <g class="door-group" style="--c:#a855f7" pointer-events="all"
+         data-rx="629" data-ry="428" data-room="web"
+        >
+        <circle class="d-hit" cx="629" cy="428" r="44" fill="rgba(0,0,0,0.001)" pointer-events="all"/>
+        <circle class="d-ring" fill="rgba(0,0,0,0.001)" cx="629" cy="428" r="21" stroke="#a855f7"/>
+        <circle class="d-spin" cx="629" cy="428" r="30" stroke="#a855f7"/>
+        <circle class="d-dot"  cx="629" cy="428" r="5"  fill="#a855f7"/>
+        <text class="d-cte" font-size="9" fill="#a855f7" letter-spacing="3">
+          <textPath href="#arc-web" startOffset="50%" text-anchor="middle">CLICK TO ENTER</textPath>
+        </text>
+        <defs>
+          <path id="arc-web" d="M 590,428 a 39,39 0 0 1 78,0"/>
+        </defs>
+        <polyline class="d-line" stroke="#a855f7" points="629,412 680,300 850,300"/>
+        <line     class="d-line" stroke="#a855f7" x1="850" y1="300" x2="1180" y2="300"/>
+        <text class="d-label" x="854" y="290" fill="#a855f7" font-size="28">The Web Studio</text>
+        <text class="d-sub"   x="854" y="324" fill="#a855f7" font-size="18">Coming Soon</text>
+      </g>
+
+      <!-- The Imagination Lab — green (948,415) -->
+      <g class="door-group" style="--c:#00efc4" pointer-events="all"
+         data-rx="962" data-ry="411" data-room="imag"
+        >
+        <circle class="d-hit" cx="962" cy="411" r="44" fill="rgba(0,0,0,0.001)" pointer-events="all"/>
+        <circle class="d-ring" fill="rgba(0,0,0,0.001)" cx="962" cy="411" r="21" stroke="#00efc4"/>
+        <circle class="d-spin" cx="962" cy="411" r="30" stroke="#00efc4"/>
+        <circle class="d-dot"  cx="962" cy="411" r="5"  fill="#00efc4"/>
+        <text class="d-cte" font-size="9" fill="#00efc4" letter-spacing="3">
+          <textPath href="#arc-imag" startOffset="50%" text-anchor="middle">CLICK TO ENTER</textPath>
+        </text>
+        <defs>
+          <path id="arc-imag" d="M 923,411 a 39,39 0 0 1 78,0"/>
+        </defs>
+        <polyline class="d-line" stroke="#00efc4" points="978,411 1060,340 1060,340"/>
+        <line     class="d-line" stroke="#00efc4" x1="1060" y1="340" x2="1295" y2="340"/>
+        <text class="d-label" x="1064" y="330" fill="#00efc4" font-size="28">The Imagination Lab</text>
+        <text class="d-sub"   x="1064" y="364" fill="#00efc4" font-size="18">Coming Soon</text>
+      </g>
+
+    </svg>
+
+  </div><!-- /site-plan -->
+</div><!-- /map-screen -->
+
+
+
+
+
+<!-- ══ ROOM SCREEN ══ -->
+<div id="room-screen">
+  <div id="room-bg">
+    <video id="room-video" autoplay muted loop playsinline preload="none"></video>
+  </div>
+  <div id="hl">
+    <!-- hotspots injected by JS per room -->
+  </div>
+</div>
+
+<!-- Room name badge -->
+<div id="room-name-badge"></div>
+
+<!-- Map button -->
+<button id="map-btn">◱ Map</button>
+
+<!-- About label -->
+<div id="about-label">About Moongi</div>
+
+<!-- Coming Soon badge (web + imag rooms) -->
+<div id="coming-soon-badge" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:30;text-align:center;pointer-events:none;">
+  <div style="font-family:'Big Shoulders Display',sans-serif;font-weight:900;font-size:clamp(3rem,8vw,7rem);letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.08);">Coming Soon</div>
+  <div style="font-family:'Josefin Sans',sans-serif;font-weight:100;font-size:.65rem;letter-spacing:.5em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-top:.8rem;">Projects launching shortly</div>
+</div>
+
+<!-- Tutorial -->
+<div id="tutorial">
+  <div id="tut-header">
+    <span id="tut-title">How to explore</span>
+    <span id="tut-arrow">‹</span>
+  </div>
+  <div id="tut-body">
+    <ul>
+      <li><span class="icon">◎</span>Hover over any picture frame</li>
+      <li><span class="icon">▶</span>Title appears — click to watch</li>
+      <li><span class="icon">◈</span>← → arrows to browse videos</li>
+      <li><span class="icon">◱</span>Map button to change rooms</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Hover overlay -->
+<div id="hover-overlay">
+  <div id="ho-title"></div>
+  <div id="ho-sub"></div>
+  <div id="ho-play"></div>
+</div>
+
+<!-- Video modal -->
+<div id="modal-bg"></div>
+<div id="modal">
+  <div id="modal-head">
+    <div id="modal-titles"><div id="modal-title"></div><div id="modal-sub"></div></div>
+    <div id="modal-controls">
+      <span id="nav-counter"></span>
+      <button class="nav-btn">← Prev</button>
+      <button class="nav-btn">Next →</button>
+      <button id="modal-close">✕ Close</button>
+    </div>
+  </div>
+  <div id="modal-media">
+    <div id="modal-ph">
+      <span class="ph-icon">▶</span>
+      <div class="ph-msg">Set <code>video</code> in ROOMS data below</div>
+    </div>
+  </div>
+</div>
+<div id="esc">ESC — close</div>
+
+<!-- About panel -->
+<div id="about-panel">
+  <div id="about-inner">
+    <div id="about-text">
+      <div id="about-eyebrow">Architect &nbsp;·&nbsp; Big Tech PM &nbsp;·&nbsp; AI Creator</div>
+      <div id="about-name">Moongi</div>
+      <div id="about-role">Turning ideas into stories — using AI to make creative work that actually moves people.</div>
+      <div id="about-bio">
+        <p>I spent 10 years as an architect specializing in residential and real estate before pivoting into product management at Amazon, where I built products used by millions. Today I run a creative studio at the intersection of architecture, technology, and AI.</p>
+        <p>After hours I design, build, and direct — producing AI videos, websites, brand experiences, and content strategies for clients in real estate, beauty, and hospitality. My only employee is AI.</p>
+        <p>I'm bilingual (Korean · English), obsessed with visual storytelling, and convinced the best creative work of this decade will come from people who can hold both worlds — technical and artistic — in the same hand.</p>
+      </div>
+      <div id="about-tags">
+        <span>Architecture</span><span>Real Estate</span><span>AI Video</span><span>Product Strategy</span>
+        <span>Brand Design</span><span>Web Dev</span><span>Marketing</span>
+        <span>Branding</span><span>Social Media Content</span>
+      </div>
+    </div>
+  </div>
+</div>
+<button id="about-close">✕ &nbsp; Close</button>
+
+<script defer src="/_vercel/insights/script.js"></script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
